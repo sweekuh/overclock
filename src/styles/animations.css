@@ -1,0 +1,168 @@
+/* ─── OVERCLOCK Animations ─────────────────────────────────────────────────── */
+
+/* ─── Wizard Step Transitions ────────────────────────────────────────────── */
+
+/* Forward: enter from right */
+@keyframes step-enter-right {
+  from {
+    opacity: 0;
+    transform: translateX(var(--slide-distance));
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Forward: exit to left */
+@keyframes step-exit-left {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(calc(var(--slide-distance) * -1));
+  }
+}
+
+/* Back: enter from left */
+@keyframes step-enter-left {
+  from {
+    opacity: 0;
+    transform: translateX(calc(var(--slide-distance) * -1));
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Back: exit to right */
+@keyframes step-exit-right {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(var(--slide-distance));
+  }
+}
+
+/* Commit: crossfade only (no slide) */
+@keyframes step-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes step-fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+/* ─── Transition Container ───────────────────────────────────────────────── */
+
+.step-transition {
+  position: relative;
+  width: 100%;
+  min-height: 0;
+}
+
+.step-transition__layer {
+  width: 100%;
+}
+
+.step-transition__layer--exiting {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  pointer-events: none;
+}
+
+/* ─── Forward Direction ──────────────────────────────────────────────────── */
+
+.step-transition--forward .step-transition__layer--entering {
+  animation: step-enter-right var(--duration-enter) var(--ease-out-expo) both;
+  animation-delay: var(--delay-stagger);
+}
+
+.step-transition--forward .step-transition__layer--exiting {
+  animation: step-exit-left var(--duration-exit) var(--ease-in-expo) both;
+}
+
+/* ─── Backward Direction ─────────────────────────────────────────────────── */
+
+.step-transition--backward .step-transition__layer--entering {
+  animation: step-enter-left var(--duration-enter) var(--ease-out-expo) both;
+  animation-delay: var(--delay-stagger);
+}
+
+.step-transition--backward .step-transition__layer--exiting {
+  animation: step-exit-right var(--duration-exit) var(--ease-in-expo) both;
+}
+
+/* ─── Commit Direction (Apply step — crossfade only) ─────────────────────── */
+
+.step-transition--commit .step-transition__layer--entering {
+  animation: step-fade-in var(--duration-commit) var(--ease-commit) both;
+  animation-delay: var(--delay-stagger);
+}
+
+.step-transition--commit .step-transition__layer--exiting {
+  animation: step-fade-out var(--duration-commit) var(--ease-commit) both;
+}
+
+/* ─── Utility Animations ─────────────────────────────────────────────────── */
+
+/* Pulse for "applying" state */
+@keyframes pulse-accent {
+  0%, 100% {
+    box-shadow: 0 0 0 0 var(--accent-glow);
+  }
+  50% {
+    box-shadow: 0 0 16px 4px var(--accent-glow);
+  }
+}
+
+/* Shimmer for loading states */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Step progress bar fill */
+@keyframes progress-fill {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+/* Fade in for initial load */
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.animate-fade-in {
+  animation: fade-in var(--duration-standard) var(--ease-out-expo) forwards;
+}
+
+.animate-pulse {
+  animation: pulse-accent 2s ease-in-out infinite;
+}
+
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--bg-surface) 25%,
+    var(--bg-elevated) 50%,
+    var(--bg-surface) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}

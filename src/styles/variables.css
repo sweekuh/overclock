@@ -1,0 +1,76 @@
+/* ─── OVERCLOCK Design Tokens — "Precision Dark" ───────────────────────────── */
+
+:root {
+  /* Surfaces */
+  --bg-base: #07080C;
+  --bg-surface: #0F1117;
+  --bg-elevated: #161820;
+  --bg-title-bar: #0A0B10;
+
+  /* Borders */
+  --border-default: #1E2029;
+  --border-focus: #2A2D38;
+  --border-accent: rgba(59, 130, 246, 0.25);
+
+  /* Text */
+  --text-primary: #E2E4E9;
+  --text-secondary: #9CA3AF;
+  --text-muted: #6B7080;
+  --text-accent: #60A5FA;
+
+  /* Semantic */
+  --accent: #3B82F6;
+  --accent-hover: #2563EB;
+  --accent-glow: rgba(59, 130, 246, 0.12);
+  --success: #22C55E;
+  --warning: #EAB308;
+  --danger: #EF4444;
+  --info: #6366F1;
+
+  /* Typography */
+  --font-heading: 'JetBrains Mono', monospace;
+  --font-body: 'Inter', -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* Spacing scale (4px base) */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 12px;
+  --space-lg: 16px;
+  --space-xl: 24px;
+  --space-2xl: 32px;
+  --space-3xl: 48px;
+
+  /* Radii */
+  --radius-badge: 3px;
+  --radius-button: 4px;
+  --radius-card: 6px;
+
+  /* Motion */
+  --duration-micro: 150ms;
+  --duration-standard: 250ms;
+  --duration-exit: 200ms;
+  --duration-enter: 300ms;
+  --duration-commit: 200ms;
+  --duration-page: 300ms;
+  --delay-stagger: 50ms;
+  --slide-distance: 24px;
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-expo: cubic-bezier(0.7, 0, 0.84, 0);
+  --ease-commit: cubic-bezier(0.33, 1, 0.68, 1);
+
+  /* Sizing */
+  --title-bar-height: 36px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-micro: 0ms;
+    --duration-standard: 0ms;
+    --duration-exit: 0ms;
+    --duration-enter: 0ms;
+    --duration-commit: 0ms;
+    --duration-page: 0ms;
+    --delay-stagger: 0ms;
+  }
+}
