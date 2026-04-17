@@ -17,6 +17,7 @@ src-tauri/target/
 
 # Reference files (not source)
 reference/
+tasks/
 
 # Editor directories and files
 .vscode/*

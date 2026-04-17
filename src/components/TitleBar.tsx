@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 
 interface TitleBarProps {
@@ -6,7 +7,31 @@ interface TitleBarProps {
 }
 
 export function TitleBar({ step, totalSteps = 5 }: TitleBarProps) {
-  const appWindow = getCurrentWindow();
+  // Gracefully handle running in a normal browser (localhost) vs Tauri wrapper
+  const isTauri = typeof window !== 'undefined' && '__TAURI_INTERNALS__' in window;
+  const appWindow = isTauri ? getCurrentWindow() : null;
+  
+  const [skin, setSkin] = useState<"precision" | "retro">(() => {
+    return (localStorage.getItem("overclock_skin") as "precision" | "retro") || "precision";
+  });
+  const [theme, setTheme] = useState<"dark" | "light">(() => {
+    return (localStorage.getItem("overclock_theme") as "dark" | "light") || "dark";
+  });
+
+  useEffect(() => {
+    document.body.setAttribute("data-skin", skin);
+    document.body.setAttribute("data-theme", theme);
+    localStorage.setItem("overclock_skin", skin);
+    localStorage.setItem("overclock_theme", theme);
+  }, [skin, theme]);
+
+  const toggleSkin = () => {
+    setSkin((s) => (s === "precision" ? "retro" : "precision"));
+  };
+
+  const toggleTheme = () => {
+    setTheme((t) => (t === "dark" ? "light" : "dark"));
+  };
 
   return (
     <div className="title-bar">
@@ -24,7 +49,23 @@ export function TitleBar({ step, totalSteps = 5 }: TitleBarProps) {
       <div className="title-bar__controls">
         <button
           className="title-bar__btn"
-          onClick={() => appWindow.minimize()}
+          onClick={toggleTheme}
+          title={`Switch to ${theme === "dark" ? "Light" : "Dark"} Mode`}
+        >
+          {theme === "dark" ? "☼" : "☾"}
+        </button>
+        <button
+          className="title-bar__btn"
+          style={{ fontSize: "12px", width: "auto", padding: "0 8px" }}
+          onClick={toggleSkin}
+          title="Toggle Skin"
+        >
+          [ {skin.toUpperCase()} ]
+        </button>
+
+        <button
+          className="title-bar__btn"
+          onClick={() => appWindow?.minimize()}
           aria-label="Minimize"
         >
           &#x2500;
@@ -32,6 +73,7 @@ export function TitleBar({ step, totalSteps = 5 }: TitleBarProps) {
         <button
           className="title-bar__btn"
           onClick={async () => {
+            if (!appWindow) return;
             const maximized = await appWindow.isMaximized();
             maximized ? appWindow.unmaximize() : appWindow.maximize();
           }}
@@ -41,7 +83,7 @@ export function TitleBar({ step, totalSteps = 5 }: TitleBarProps) {
         </button>
         <button
           className="title-bar__btn title-bar__btn--close"
-          onClick={() => appWindow.close()}
+          onClick={() => appWindow?.close()}
           aria-label="Close"
         >
           &#x2715;

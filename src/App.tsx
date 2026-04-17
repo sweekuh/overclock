@@ -30,6 +30,69 @@ interface SnapshotInfo {
   change_count: number;
 }
 
+const checkIsTauri = () => {
+  return typeof window !== 'undefined' && window.__TAURI_INTERNALS__ !== undefined;
+};
+
+// Extracted mock data loader for browser testing
+const loadMockData = (setHardware: any, setProfiles: any, setLoading: any, setIsAdmin: any) => {
+  setIsAdmin(true);
+  setHardware({
+    cpu: { name: "AMD Ryzen 9 7950X", manufacturer: "AMD", cores: 16, threads: 32, max_clock_mhz: 5700 },
+    gpu: { name: "NVIDIA RTX 4090", manufacturer: "NVIDIA", vram_mb: 24576 },
+    memory: { total_mb: 65536, speed_mhz: 6000, memory_type: "DDR5" },
+    storage: { media_type: "NVMe", total_gb: 2000, model: "Samsung 990 PRO" },
+    network: { adapter_name: "Intel I225-V", description: "2.5GbE", link_speed: "2500 Mbps", connection_type: "Ethernet", supports_interrupt_mod: true, supports_eee: true },
+    os: { caption: "Windows 11 Pro", version: "10.0.22631", build_number: "22631", edition: "Pro", is_desktop: true },
+    games: [{ name: "Counter-Strike 2", exe_name: "cs2.exe", install_path: "C:\\Steam\\cs2.exe", source: "Steam" }]
+  });
+  setProfiles([
+    {
+      id: "comp-fps",
+      name: "Competitive FPS",
+      description: "Minimum latency, maximum debloat. For CS2, Valorant.",
+      power_ultimate: true,
+      usb_suspend_disable: true,
+      nagle_disable: true,
+      interrupt_mod_disable: true,
+      wake_on_lan_disable: true,
+      mouse_accel_disable: true,
+      disable_services: ["SysMain", "DiagTrack", "XblAuthManager"],
+      process_priority_high: true,
+      background_apps_disable: true
+    },
+    {
+      id: "creator-mode",
+      name: "Creator Studio",
+      description: "Optimized for Premiere, Blender, and heavy background workloads.",
+      power_ultimate: true,
+      usb_suspend_disable: false,
+      nagle_disable: false,
+      interrupt_mod_disable: false,
+      wake_on_lan_disable: false,
+      mouse_accel_disable: false,
+      disable_services: ["DiagTrack"],
+      process_priority_high: false,
+      background_apps_disable: false
+    },
+    {
+      id: "max-battery",
+      name: "Max Battery",
+      description: "Aggressive power saving for laptops. Reduces performance.",
+      power_ultimate: false,
+      usb_suspend_disable: false,
+      nagle_disable: false,
+      interrupt_mod_disable: false,
+      wake_on_lan_disable: false,
+      mouse_accel_disable: false,
+      disable_services: [],
+      process_priority_high: false,
+      background_apps_disable: true
+    }
+  ]);
+  setLoading(false);
+};
+
 function App() {
   const [step, setStep] = useState<FullStep>("detecting");
   const [hardware, setHardware] = useState<HardwareProfile | null>(null);
@@ -67,6 +130,11 @@ function App() {
   useEffect(() => {
     async function init() {
       try {
+        if (!checkIsTauri()) {
+          loadMockData(setHardware, setProfiles, setLoading, setIsAdmin);
+          return;
+        }
+
         const admin = await invoke<boolean>("check_admin");
         setIsAdmin(admin);
         if (!admin) {
@@ -107,6 +175,12 @@ function App() {
     setLoading(true);
 
     try {
+      if (!checkIsTauri()) {
+        loadMockData(setHardware, setProfiles, setLoading, setIsAdmin);
+        navigateTo("detecting");
+        return;
+      }
+
       const [hw, profs] = await Promise.all([
         invoke<HardwareProfile>("detect_hardware"),
         invoke<Profile[]>("get_profiles"),
@@ -132,19 +206,60 @@ function App() {
     setApplyIndex(0);
 
     try {
-      // Call the real optimizer backend with excluded changes
-      const results = await invoke<{ title: string; status: string; message?: string }[]>(
-        "apply_profile",
-        { profileId: selectedProfile.id, hardware, excludedKeys }
-      );
+      let titles: string[] = [];
+      let statuses: ("applied" | "skipped" | "failed")[] = [];
 
-      // Populate the progress UI with real results
-      const titles = results.map(r => r.title);
-      const statuses = results.map(r => r.status as "applied" | "skipped" | "failed");
+      if (!checkIsTauri()) {
+        // Browser fallback for UI design testing
+        const mockChangeTitles = [
+          "Activate Ultimate Performance power plan",
+          "Disable USB Selective Suspend",
+          "Disable Nagle's Algorithm",
+          "Disable Interrupt Moderation",
+          "Disable Wake-on-LAN",
+          "Disable Mouse Acceleration",
+          "Disable SysMain",
+          "Disable DiagTrack",
+          "Set game process priority to High",
+          "Disable background apps"
+        ];
+        
+        const mockResults = mockChangeTitles.map((title, i) => ({
+          title,
+          status: i === 3 ? "failed" : "applied"
+        }));
+        
+        // Simulate a slight delay for realism
+        for (let i = 0; i < mockResults.length; i++) {
+          setApplyChanges(prev => [...prev, mockResults[i].title]);
+          setApplyResults(prev => [...prev, "pending"]);
+          await new Promise(r => setTimeout(r, 600));
+          setApplyResults(prev => {
+            const next = [...prev];
+            next[i] = mockResults[i].status as "applied" | "skipped" | "failed";
+            return next;
+          });
+          setApplyIndex(i + 1);
+        }
+        
+        titles = mockResults.map(r => r.title);
+        statuses = mockResults.map(r => r.status as "applied" | "skipped" | "failed");
+        
+      } else {
+        // Call the real optimizer backend with excluded changes
+        const results = await invoke<{ title: string; status: string; message?: string }[]>(
+          "apply_profile",
+          { profileId: selectedProfile.id, hardware, excludedKeys }
+        );
 
-      setApplyChanges(titles);
-      setApplyResults(statuses);
-      setApplyIndex(titles.length);
+        titles = results.map(r => r.title);
+        statuses = results.map(r => r.status as "applied" | "skipped" | "failed");
+        
+        setApplyChanges(titles);
+        setApplyResults(statuses);
+        setApplyIndex(titles.length);
+      }
+
       navigateTo("results");
     } catch (err) {
       setError(String(err));
@@ -211,6 +326,11 @@ function App() {
                   // Re-trigger init
                   (async () => {
                     try {
+                      if (!checkIsTauri()) {
+                        loadMockData(setHardware, setProfiles, setLoading, setIsAdmin);
+                        return;
+                      }
+                      
                       const [hw, profs] = await Promise.all([
                         invoke<HardwareProfile>("detect_hardware"),
                         invoke<Profile[]>("get_profiles"),

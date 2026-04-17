@@ -100,7 +100,7 @@ export function ProfileSelector({
       )}
 
       <div className="actions">
-        <button className="btn btn--ghost" onClick={onBack}>
+        <button className="btn btn--secondary" onClick={onBack}>
           ← Back
         </button>
         <button

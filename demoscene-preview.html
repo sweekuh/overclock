@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OVERCLOCK - Demoscene Design Preview</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Share+Tech+Mono&family=VT323&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-base: #07080C;
+            --bg-surface: #0F1117;
+            --bg-elevated: #161820;
+            --border-default: #1E2029;
+            --text-primary: #E2E4E9;
+            --text-secondary: #9CA3AF;
+            --accent-blue: #3B82F6;
+            --accent-cyan: #00FFFF;
+            --accent-magenta: #FF00FF;
+            
+            --font-hero: 'Press Start 2P', cursive;
+            --font-heading: 'Share Tech Mono', monospace;
+            --font-body: 'VT323', monospace;
+        }
+
+        /* Light mode overrides (even though demoscene should be dark, adding toggle per specs) */
+        [data-theme="light"] {
+            --bg-base: #E2E4E9;
+            --bg-surface: #FFFFFF;
+            --bg-elevated: #F3F4F6;
+            --border-default: #9CA3AF;
+            --text-primary: #07080C;
+            --text-secondary: #1E2029;
+            --accent-blue: #2563EB;
+            --accent-cyan: #0891B2;
+            --accent-magenta: #C026D3;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            font-size: 20px;
+            margin: 0;
+            padding: 0;
+            line-height: 1.4;
+            position: relative;
+        }
+
+        /* CRT Scanline Effect */
+        body::after {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 2;
+            background-size: 100% 4px, 6px 100%;
+            pointer-events: none;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        header {
+            border-bottom: 2px solid var(--accent-blue);
+            padding-bottom: 20px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        h1 {
+            font-family: var(--font-hero);
+            font-size: 32px;
+            color: var(--accent-cyan);
+            text-shadow: 2px 2px 0px var(--accent-magenta);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        h2, h3 {
+            font-family: var(--font-heading);
+            color: var(--accent-blue);
+            text-transform: uppercase;
+            border-bottom: 1px dashed var(--border-default);
+            padding-bottom: 5px;
+        }
+
+        .section {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--accent-blue);
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 4px 4px 0px var(--accent-blue);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .grid { grid-template-columns: 1fr; }
+        }
+
+        /* Font Comparison */
+        .font-sample {
+            margin-bottom: 20px;
+        }
+        .font-sample.hero { font-family: var(--font-hero); font-size: 18px; }
+        .font-sample.heading { font-family: var(--font-heading); font-size: 24px; }
+        .font-sample.body { font-family: var(--font-body); font-size: 20px; }
+
+        /* Color Swatches */
+        .swatch-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .swatch {
+            width: 100px;
+            height: 100px;
+            border: 1px solid var(--text-primary);
+            display: flex;
+            align-items: flex-end;
+            padding: 5px;
+            font-size: 14px;
+            font-family: var(--font-heading);
+            color: #fff;
+            text-shadow: 1px 1px 0 #000;
+        }
+
+        /* Components */
+        button {
+            background-color: transparent;
+            color: var(--accent-cyan);
+            font-family: var(--font-heading);
+            font-size: 18px;
+            border: 1px solid var(--accent-cyan);
+            padding: 10px 20px;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: all 0.1s;
+        }
+        button:hover {
+            background-color: var(--accent-cyan);
+            color: var(--bg-base);
+            box-shadow: 2px 2px 0px var(--accent-magenta);
+        }
+        
+        button.primary {
+            background-color: var(--accent-blue);
+            color: var(--text-primary);
+            border-color: var(--accent-blue);
+        }
+        button.primary:hover {
+            background-color: var(--text-primary);
+            color: var(--accent-blue);
+        }
+
+        .alert {
+            padding: 15px;
+            border: 1px solid;
+            margin-bottom: 10px;
+            font-family: var(--font-heading);
+        }
+        .alert.info { border-color: var(--accent-blue); color: var(--accent-blue); }
+        .alert.error { border-color: var(--accent-magenta); color: var(--accent-magenta); background: rgba(255,0,255,0.1); }
+        .alert.success { border-color: var(--accent-cyan); color: var(--accent-cyan); background: rgba(0,255,255,0.1); }
+
+        .ascii-art {
+            font-family: monospace;
+            white-space: pre;
+            color: var(--accent-magenta);
+            font-size: 12px;
+            line-height: 10px;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        #theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <button id="theme-toggle" onclick="toggleTheme()">[ TOGGLE THEME ]</button>
+    
+    <header>
+        <div class="ascii-art">
+  ___ _   _ ___ ___  ___ _    ___  ___ _  __
+ / _ \ | | | __| _ \/ __| |  / _ \/ __| |/ /
+| (_) \ V /| _||   / (__| |_| (_) \__ \ ' < 
+ \___/ \_/ |___|_|_\\___|____\___/|___/_|\_\
+        </div>
+        <h1>OVERCLOCK</h1>
+        <p style="font-family: var(--font-heading); color: var(--accent-blue);">[*] SYSTEM PERFORMANCE OPTIMIZER v0.1</p>
+    </header>
+
+    <div class="section">
+        <h2>>> TYPOGRAPHY_SYSTEM</h2>
+        <div class="grid">
+            <div>
+                <h3>Role: Hero / Display</h3>
+                <p>Font: Press Start 2P</p>
+                <div class="font-sample hero">OVERCLOCK_SYS</div>
+            </div>
+            <div>
+                <h3>Role: Headings / Data</h3>
+                <p>Font: Share Tech Mono</p>
+                <div class="font-sample heading">SELECT PAYLOAD VECTOR</div>
+            </div>
+            <div style="grid-column: 1 / -1;">
+                <h3>Role: Body / UI</h3>
+                <p>Font: VT323</p>
+                <div class="font-sample body">
+                    > Initializing kernel hooks... [OK]<br>
+                    > Bypassing Windows Defender restrictions... [OK]<br>
+                    > Injecting performance profile "COMPETITIVE_FPS"...<br>
+                    This is the body font. It evokes the feeling of reading a raw terminal dump or a classic text-mode BBS. It's highly readable but maintains the hacker aesthetic.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>>> COLOR_PALETTE</h2>
+        <div class="swatch-container">
+            <div class="swatch" style="background-color: var(--bg-base);">Base<br>#07080C</div>
+            <div class="swatch" style="background-color: var(--bg-surface);">Surface<br>#0F1117</div>
+            <div class="swatch" style="background-color: var(--border-default);">Border<br>#1E2029</div>
+            <div class="swatch" style="background-color: var(--text-primary); color: #000; text-shadow: none;">Text Pri<br>#E2E4E9</div>
+            <div class="swatch" style="background-color: var(--accent-blue);">Accent<br>#3B82F6</div>
+            <div class="swatch" style="background-color: var(--accent-cyan); color: #000; text-shadow: none;">Cyan<br>#00FFFF</div>
+            <div class="swatch" style="background-color: var(--accent-magenta);">Magenta<br>#FF00FF</div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>>> UI_COMPONENTS</h2>
+        <div class="grid">
+            <div>
+                <h3>Interactive</h3>
+                <button class="primary" style="margin-bottom: 10px;">[ EXECUTE OVERCLOCK ]</button><br>
+                <button>[ CANCEL OPERATION ]</button>
+            </div>
+            <div>
+                <h3>System Alerts</h3>
+                <div class="alert info">[*] Scanning hardware configurations...</div>
+                <div class="alert success">[+] Profile applied successfully.</div>
+                <div class="alert error">[!] FATAL: Registry access denied.</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function toggleTheme() {
+        const body = document.body;
+        if (body.getAttribute('data-theme') === 'light') {
+            body.removeAttribute('data-theme');
+        } else {
+            body.setAttribute('data-theme', 'light');
+        }
+    }
+</script>
+
+</body>
+</html>

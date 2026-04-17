@@ -221,7 +221,7 @@ export function ChangePreview({ profile, hardware, onApply, onBack }: ChangePrev
       </div>
 
       <div className="actions">
-        <button className="btn btn--ghost" onClick={onBack}>
+        <button className="btn btn--secondary" onClick={onBack}>
           ← Back
         </button>
         <button
