@@ -4,6 +4,8 @@
 
 OVERCLOCK detects your hardware, lets you pick an optimization profile, and applies registry, power, network, and service tweaks — with a full rollback snapshot so you can undo everything.
 
+### [📥 Download OVERCLOCK Installer (.exe)](https://github.com/sweekuh/overclock/releases/latest)
+
 ## Features
 
 - **Hardware Detection** — CPU, GPU, RAM, Storage, Network, OS via WMI  
