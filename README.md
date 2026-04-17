@@ -5,6 +5,7 @@
 OVERCLOCK detects your hardware, lets you pick an optimization profile, and applies registry, power, network, and service tweaks — with a full rollback snapshot so you can undo everything.
 
 ### [📥 Download OVERCLOCK Installer (.exe)](https://github.com/sweekuh/overclock/releases/latest)
+> **Note:** I didn't pay $200 for a code signing certificate, so Windows SmartScreen will show an "Unknown Publisher" warning when you run the installer. Click "More info" -> "Run anyway".
 
 ## Features
 
