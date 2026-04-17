@@ -39,8 +39,7 @@
     ],
     "windows": {
       "nsis": {
-        "installerIcon": "icons/icon.ico",
-        "template": "nsis/installer.nsi"
+        "installerIcon": "icons/icon.ico"
       }
     }
   }
