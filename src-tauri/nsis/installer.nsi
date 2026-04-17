@@ -23,9 +23,9 @@ InstallDirRegKey HKLM "Software\{{manufacturer}}\{{product_name}}" "Install_Dir"
 !define MUI_ABORTWARNING
 !define MUI_ICON "..\..\..\..\icons\icon.ico"
 !define MUI_UNICON "..\..\..\..\icons\icon.ico"
-!define MUI_HEADERIMAGE
-!define MUI_HEADERIMAGE_BITMAP "{{header_image}}"
-!define MUI_WELCOMEFINISHPAGE_BITMAP "{{sidebar_image}}"
+; !define MUI_HEADERIMAGE
+; !define MUI_HEADERIMAGE_BITMAP "{{header_image}}"
+; !define MUI_WELCOMEFINISHPAGE_BITMAP "{{sidebar_image}}"
 !define MUI_BGCOLOR 07080C
 !define MUI_TEXTCOLOR E2E4E9
 
