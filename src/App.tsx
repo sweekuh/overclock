@@ -249,7 +249,7 @@ function App() {
         // Call the real optimizer backend with excluded changes
         const results = await invoke<{ title: string; status: string; message?: string }[]>(
           "apply_profile",
-          { profileId: selectedProfile.id, hardware, excludedKeys }
+          { profileId: selectedProfile.id, excludedKeys }
         );
 
         titles = results.map(r => r.title);

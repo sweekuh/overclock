@@ -39,11 +39,14 @@ pub fn check_snapshot() -> Option<SnapshotInfo> {
 
 /// Apply a profile to the system — real registry writes + snapshot capture
 #[tauri::command]
-pub fn apply_profile(profile_id: String, hardware: HardwareProfile, excluded_keys: Option<Vec<String>>) -> Result<Vec<ApplyResultIpc>, String> {
+pub fn apply_profile(profile_id: String, excluded_keys: Option<Vec<String>>) -> Result<Vec<ApplyResultIpc>, String> {
     let profiles = profiles::all_profiles();
     let profile = profiles.iter()
         .find(|p| p.id == profile_id)
         .ok_or_else(|| format!("Profile '{}' not found", profile_id))?;
+
+    // SECURITY FIX: Re-detect hardware securely on the backend instead of trusting frontend input
+    let hardware = detector::detect_hardware()?;
 
     let excluded = excluded_keys.unwrap_or_default();
     let results = optimizer::apply_profile(profile, &hardware, &excluded);
