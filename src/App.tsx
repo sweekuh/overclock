@@ -31,7 +31,7 @@ interface SnapshotInfo {
 }
 
 const checkIsTauri = () => {
-  return typeof window !== 'undefined' && window.__TAURI_INTERNALS__ !== undefined;
+  return typeof window !== 'undefined' && '__TAURI_INTERNALS__' in (window as any);
 };
 
 // Extracted mock data loader for browser testing

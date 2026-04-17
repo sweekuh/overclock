@@ -8,7 +8,7 @@ interface TitleBarProps {
 
 export function TitleBar({ step, totalSteps = 5 }: TitleBarProps) {
   // Gracefully handle running in a normal browser (localhost) vs Tauri wrapper
-  const isTauri = typeof window !== 'undefined' && '__TAURI_INTERNALS__' in window;
+  const isTauri = typeof window !== 'undefined' && '__TAURI_INTERNALS__' in (window as any);
   const appWindow = isTauri ? getCurrentWindow() : null;
   
   const [skin, setSkin] = useState<"precision" | "retro">(() => {
