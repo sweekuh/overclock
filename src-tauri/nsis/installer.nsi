@@ -21,8 +21,8 @@ InstallDirRegKey HKLM "Software\{{manufacturer}}\{{product_name}}" "Install_Dir"
 
 ; ─── Interface Settings ─────────────────────────────────────────────────────
 !define MUI_ABORTWARNING
-!define MUI_ICON "{{icon_path}}"
-!define MUI_UNICON "{{icon_path}}"
+!define MUI_ICON "..\..\..\..\icons\icon.ico"
+!define MUI_UNICON "..\..\..\..\icons\icon.ico"
 !define MUI_HEADERIMAGE
 !define MUI_HEADERIMAGE_BITMAP "{{header_image}}"
 !define MUI_WELCOMEFINISHPAGE_BITMAP "{{sidebar_image}}"
